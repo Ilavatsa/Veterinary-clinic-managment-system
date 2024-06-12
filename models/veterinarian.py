@@ -9,7 +9,7 @@ class Veterinanrian:
 
     def save(self):
         sql = """
-            INSERT INTO medical_records (name, specialty, phone_number) VALUES (?, ?, ?)
+            INSERT INTO veterinarians (name, specialty, phone_number) VALUES (?, ?, ?)
         """
         cursor.execute(sql, (self.name, self.specialty, self.phone_number))
         cursor.connection.commit()
@@ -17,7 +17,7 @@ class Veterinanrian:
 
     def delete(self):
         sql = """
-            DELETE FROM Veterinarian WHERE id = ?
+            DELETE FROM veterinarians WHERE id = ?
         """
         cursor.execute(sql, (self.id,))
         cursor.connection.commit()
