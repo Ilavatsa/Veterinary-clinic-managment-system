@@ -1,27 +1,30 @@
-from debug import cursor
+from db_helper import execute_query, fetch
 
 class Treatment:
-    def __init__(self, description, cost, appointment_id, id=None):
-        self.id = id
-        self.description = description
-        self.cost = cost
-        self.appointment_id = appointment_id
-
-    def save(self):
-        sql = """
-            INSERT INTO treatments (description
-            ++
-            
-            
-            , cost, appointment_id) VALUES (?, ?, ?)
+    def create_table(self):
+        """Create the treatment table."""
+        query = """
+        CREATE TABLE IF NOT EXISTS treatment (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            pet_id INTEGER,
+            appointment_id INTEGER,
+            treatment_date TIMESTAMP,
+            description TEXT,
+            FOREIGN KEY (pet_id) REFERENCES pet(id),
+            FOREIGN KEY (appointment_id) REFERENCES appointment(id)
+        );
         """
-        cursor.execute(sql, (self.description, self.cost, self.appointment_id))
-        cursor.connection.commit()
-        self.id = cursor.lastrowid
+        execute_query(query)
 
-    def delete(self):
-        sql = """
-            DELETE FROM treatments WHERE id = ?
+    def create(self, pet_id, appointment_id, treatment_date, description):
+        """Create a new treatment."""
+        query = f"""
+        INSERT INTO treatment (pet_id, appointment_id, treatment_date, description)
+        VALUES ({pet_id}, {appointment_id}, '{treatment_date}', '{description}');
         """
-        cursor.execute(sql, (self.id,))
-        cursor.connection.commit()
+        execute_query(query)
+
+    def drop_table(self):
+        """Drop the treatment table."""
+        query = "DROP TABLE IF EXISTS treatment;"
+        execute_query(query)
