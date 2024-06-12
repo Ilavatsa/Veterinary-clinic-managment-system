@@ -1,25 +1,31 @@
-from debug import cursor
+from db_helper import execute_query, fetch
 
 class Pet:
-    def __init__(self, name, species, age, owner_id, vet_id, id=None):
-        self.id = id
-        self.name = name
-        self.species = species
-        self.age = age
-        self.owner_id = owner_id
-        self.vet_id = vet_id
-
-    def save(self):
-        sql = """
-            INSERT INTO pets (name, species, age, owner_id, vet-id) VALUES (?, ?, ?)
+    def create_table(self):
+        """Create the pet table."""
+        query = """
+        CREATE TABLE IF NOT EXISTS pet (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            species TEXT,
+            breed TEXT,
+            age INTEGER,
+            owner_id INTEGER,
+            FOREIGN KEY (owner_id) REFERENCES owner(id)
+        );
         """
-        cursor.execute(sql, (self.name, self.species, self.age, self.owner_id, self.vet_id))
-        cursor.connection.commit()
-        self.id = cursor.lastrowid
+        execute_query(query)
 
-    def delete(self):
-        sql = """
-            DELETE FROM pets WHERE id = ?
+    def create(self, name, species, breed, age, owner_id):
+        """Create a new pet."""
+        query = f"""
+        INSERT INTO pet (name, species, breed, age, owner_id)
+        VALUES ('{name}', '{species}', '{breed}', {age}, {owner_id});
         """
-        cursor.execute(sql, (self.id,))
-        cursor.connection.commit()
+        execute_query(query)
+
+    def drop_table(self):
+        """Drop the pet table."""
+        query = "DROP TABLE IF EXISTS pet;"
+        execute_query(query)
+
