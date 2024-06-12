@@ -1,120 +1,29 @@
-from config import conn, cursor
+import sqlite3
 
+def create_tables():
+    # Connect to the database (or create it if it doesn't exist)
+    conn = sqlite3.connect('vet_clinic.db')
+    cursor = conn.cursor()
 
-class Student:
-
-    def __init__(
-        self, first_name, last_name, gender, age, phone, username, email, id=None
-    ):
-        self.id = id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.gender = gender
-        self.age = age
-        self.phone = phone
-        self.username = username
-        self.email = email
-
-    def __repr__(self):
-        return f"<Student {self.first_name} {self.last_name} {self.gender} {self.age} {self.phone} {self.username} {self.email}>"
-
-    # class method responsible for creating the database table
-    @classmethod
-    def create_table(cls):
-        sql = """
-            CREATE TABLE students (
+    # Define the SQL commands to create the tables
+    create_owner_table = """
+        CREATE TABLE IF NOT EXISTS owner (
             id INTEGER PRIMARY KEY,
-            first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            gender TEXT,
-            age INTEGER,
-            phone TEXT NOT NULL,
-            username TEXT,
-            email TEXT
-            )
-        """
-
-        cursor.execute(sql)
-        conn.commit()
-
-    @classmethod
-    def drop_table(cls):
-        sql = """
-            DROP TABLE IF EXISTS students;
-        """
-
-        cursor.execute(sql)
-        conn.commit()
-
-    # when saving data into a database table, we need an instance of the class- hence an instance method
-    # we use bounded params to avoid directly passing malicious characters and gettig sql injections
-    def save(self):
-        # we dont need to pass in the id in the query because it is auto incrementing.
-        sql = """
-            INSERT INTO students (
-            first_name, last_name, gender, age, phone, username, email
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
-        """
-
-        cursor.execute(
-            sql,
-            (
-                self.first_name,
-                self.last_name,
-                self.gender,
-                self.age,
-                self.phone,
-                self.username,
-                self.email,
-            ),
+            name TEXT NOT NULL,
+            address TEXT,
+            phone_number TEXT
         )
-        conn.commit()
-        # update the object to contain the auto generated id from the db
-        # this id will be required on other queries like update and delete
-        self.id = cursor.lastrowid
-        # print(f"The last row id: {cursor.lastrowid}")
+    """
 
-    # create a class method that automatically creates the instance and saves it in the db
-    # class method because the object doesnt yet exist when we call this method
-    @classmethod
-    def create(cls, first_name, last_name, gender, age, phone, username, email):
-        # create a student instance
-        student = cls(first_name, last_name, gender, age, phone, username, email)
+    # Define similar SQL commands for other tables: Pet, Veterinarian, Appointment, Treatment, MedicalRecord
 
-        # save the instance
-        student.save()
+    # Execute the SQL commands to create the tables
+    cursor.execute(create_owner_table)
 
-        # return the instantiated object
-        return student
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
 
-    # method to update an existing record that corresponds to the object instance
-    def update(self):
-        sql = """
-            UPDATE students SET first_name = ?, last_name = ?, gender = ?, age = ?, phone = ?, username = ?, email = ?
-            WHERE id = ?
-        """
+if __name__ == '__main__':
+    create_tables()
 
-        cursor.execute(
-            sql,
-            (
-                self.first_name,
-                self.last_name,
-                self.gender,
-                self.age,
-                self.phone,
-                self.username,
-                self.email,
-                self.id,
-            ),
-        )
-
-        conn.commit()
-
-    def delete(self):
-        sql = """
-            DELETE FROM students
-            WHERE id = ?
-        """
-
-        cursor.execute(sql, (self.id,))
-        conn.commit()
