@@ -20,4 +20,4 @@ class Veterinanrian:
             DELETE FROM Veterinarian WHERE id = ?
         """
         cursor.execute(sql, (self.id,))
-        cursor.commit()
+        cursor.connection.commit()
