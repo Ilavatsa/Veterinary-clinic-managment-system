@@ -1,23 +1,28 @@
-from debug import cursor
+from db_helper import execute_query, fetch
 
 class Owner:
-    def __init__(self, name, address, phone_number, id=None):
-        self.id = id
-        self.name = name
-        self.address = address
-        self.phone_number = phone_number
-
-    def save(self):
-        sql = """
-            INSERT INTO owners (name, address, phone_number) VALUES (?, ?, ?)
+    def create_table(self):
+        """Create the owner table."""
+        query = """
+        CREATE TABLE IF NOT EXISTS owner (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            email TEXT,
+            phone_number TEXT
+        );
         """
-        cursor.execute(sql, (self.name, self.address, self.phone_number))
-        cursor.connection.commit()
-        self.id = cursor.lastrowid
+        execute_query(query)
 
-    def delete(self):
-        sql = """
-            DELETE FROM owners WHERE id = ?
+    def create(self, name, email, phone_number):
+        """Create a new owner."""
+        query = f"""
+        INSERT INTO owner (name, email, phone_number)
+        VALUES ('{name}', '{email}', '{phone_number}');
         """
-        cursor.execute(sql, (self.id,))
-        cursor.connection.commit()
+        execute_query(query)
+
+    def drop_table(self):
+        """Drop the owner table."""
+        query = "DROP TABLE IF EXISTS owner;"
+        execute_query(query)
+
