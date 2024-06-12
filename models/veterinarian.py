@@ -1,23 +1,27 @@
-from debug import cursor
+from db_helper import execute_query, fetch
 
-class Veterinanrian:
-    def __init__(self, name, specialty, phone_number, id=None):
-        self.id = id
-        self.name = name
-        self.specialty = specialty
-        self.phone_number = phone_number
-
-    def save(self):
-        sql = """
-            INSERT INTO veterinarians (name, specialty, phone_number) VALUES (?, ?, ?)
+class Veterinarian:
+    def create_table(self):
+        """Create the veterinarian table."""
+        query = """
+        CREATE TABLE IF NOT EXISTS veterinarian (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            specialization TEXT,
+            phone_number TEXT
+        );
         """
-        cursor.execute(sql, (self.name, self.specialty, self.phone_number))
-        cursor.connection.commit()
-        self.id = cursor.lastrowid
+        execute_query(query)
 
-    def delete(self):
-        sql = """
-            DELETE FROM veterinarians WHERE id = ?
+    def create(self, name, specialization, phone_number):
+        """Create a new veterinarian."""
+        query = f"""
+        INSERT INTO veterinarian (name, specialization, phone_number)
+        VALUES ('{name}', '{specialization}', '{phone_number}');
         """
-        cursor.execute(sql, (self.id,))
-        cursor.connection.commit()
+        execute_query(query)
+
+    def drop_table(self):
+        """Drop the veterinarian table."""
+        query = "DROP TABLE IF EXISTS veterinarian;"
+        execute_query(query)
