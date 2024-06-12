@@ -9,7 +9,7 @@ class Owner:
 
     def save(self):
         sql = """
-            INSERT INTO owner (name, address, phone_number) VALUES (?, ?, ?)
+            INSERT INTO owners (name, address, phone_number) VALUES (?, ?, ?)
         """
         cursor.execute(sql, (self.name, self.address, self.phone_number))
         cursor.connection.commit()
