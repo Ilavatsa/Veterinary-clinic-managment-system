@@ -1,83 +1,76 @@
+# debug.py
+
 import sqlite3
 
-def create_tables():
-    conn = sqlite3.connect('vet_clinic.db')
-    cursor = conn.cursor()
+# Establish the connection to the SQLite database
+conn = sqlite3.connect('vet_clinic.db')
 
-    # Create the owner table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS owner (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            address TEXT,
-            phone_number TEXT
-        )
-    ''')
+# Create a cursor object to interact with the database
+cursor = conn.cursor()
 
-    # Create the pet table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS pet (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            species TEXT,
-            age INTEGER,
-            owner_id INTEGER,
-            vet_id INTEGER,
-            FOREIGN KEY (owner_id) REFERENCES owner (id),
-            FOREIGN KEY (vet_id) REFERENCES veterinarian (id)
-        )
-    ''')
+# Function to initialize the database tables if they do not exist
+def initialize_db():
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS owners (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        address TEXT,
+        phone_number TEXT
+    )
+    """)
 
-    # Create the veterinarian table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS veterinarian (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            specialty TEXT,
-            phone_number TEXT
-        )
-    ''')
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS pets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        species TEXT,
+        breed TEXT,
+        age INTEGER,
+        owner_id INTEGER,
+        FOREIGN KEY (owner_id) REFERENCES owners (id)
+    )
+    """)
 
-    # Create the appointment table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS appointment (
-            id INTEGER PRIMARY KEY,
-            date TEXT,
-            time TEXT,
-            pet_id INTEGER,
-            vet_id INTEGER,
-            FOREIGN KEY (pet_id) REFERENCES pet (id),
-            FOREIGN KEY (vet_id) REFERENCES veterinarian (id)
-        )
-    ''')
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS veterinarians (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        specialty TEXT
+    )
+    """)
 
-    # Create the treatment table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS treatment (
-            id INTEGER PRIMARY KEY,
-            description TEXT,
-            cost REAL,
-            appointment_id INTEGER,
-            FOREIGN KEY (appointment_id) REFERENCES appointment (id)
-        )
-    ''')
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS appointments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT NOT NULL,
+        reason TEXT,
+        pet_id INTEGER,
+        veterinarian_id INTEGER,
+        FOREIGN KEY (pet_id) REFERENCES pets (id),
+        FOREIGN KEY (veterinarian_id) REFERENCES veterinarians (id)
+    )
+    """)
 
-    # Create the medical_record table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS medical_record (
-            id INTEGER PRIMARY KEY,
-            record_date TEXT,
-            details TEXT,
-            pet_id INTEGER,
-            FOREIGN KEY (pet_id) REFERENCES pet (id)
-        )
-    ''')
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS treatments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT,
+        cost REAL
+    )
+    """)
 
-    # Commit the changes and close the connection
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS medical_records (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        record_date TEXT NOT NULL,
+        details TEXT,
+        pet_id INTEGER,
+        FOREIGN KEY (pet_id) REFERENCES pets (id)
+    )
+    """)
+
     conn.commit()
-    conn.close()
 
-if __name__ == '__main__':
-    create_tables()
-
-
+# Call the function to initialize the database tables
+initialize_db()
