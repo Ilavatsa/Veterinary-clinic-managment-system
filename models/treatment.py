@@ -9,7 +9,7 @@ class Treatment:
 
     def save(self):
         sql = """
-            INSERT INTO treatment (description
+            INSERT INTO treatments (description
             ++
             
             
@@ -21,7 +21,7 @@ class Treatment:
 
     def delete(self):
         sql = """
-            DELETE FROM medical_records WHERE id = ?
+            DELETE FROM treatments WHERE id = ?
         """
         cursor.execute(sql, (self.id,))
         cursor.connection.commit()
