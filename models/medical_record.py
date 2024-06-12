@@ -1,23 +1,31 @@
-from debug import cursor
+from db_helper import execute_query, fetch
 
 class MedicalRecord:
-    def __init__(self, record_date, details, pet_id, id=None):
-        self.id = id
-        self.record_date = record_date
-        self.details = details
-        self.pet_id = pet_id
-
-    def save(self):
-        sql = """
-            INSERT INTO medical_records (record_date, details, pet_id) VALUES (?, ?, ?)
+    def create_table(self):
+        """Create the medical_record table."""
+        query = """
+        CREATE TABLE IF NOT EXISTS medical_record (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            pet_id INTEGER,
+            visit_date TIMESTAMP,
+            diagnosis TEXT,
+            treatment_plan TEXT,
+            FOREIGN KEY (pet_id) REFERENCES pet(id)
+        );
         """
-        cursor.execute(sql, (self.record_date, self.details, self.pet_id))
-        cursor.connection.commit()
-        self.id = cursor.lastrowid
+        execute_query(query)
 
-    def delete(self):
-        sql = """
-            DELETE FROM medical_records WHERE id = ?
+    def create(self, pet_id, visit_date, diagnosis, treatment_plan):
+        """Create a new medical record."""
+        query = f"""
+        INSERT INTO medical_record (pet_id, visit_date, diagnosis, treatment_plan)
+        VALUES ({pet_id}, '{visit_date}', '{diagnosis}', '{treatment_plan}');
         """
-        cursor.execute(sql, (self.id,))
-        cursor.connection.commit()
+        execute_query(query)
+
+    def drop_table(self):
+        """Drop the medical_record table."""
+        query = "DROP TABLE IF EXISTS medical_record;"
+        execute_query(query)
+
+
