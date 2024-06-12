@@ -1,76 +1,41 @@
-# debug.py
+import logging
+import sys
 
-import sqlite3
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
-# Establish the connection to the SQLite database
-conn = sqlite3.connect('vet_clinic.db')
+def log_debug(message):
+    """Log a debug message."""
+    logging.debug(message)
 
-# Create a cursor object to interact with the database
-cursor = conn.cursor()
+def log_info(message):
+    """Log an info message."""
+    logging.info(message)
 
-# Function to initialize the database tables if they do not exist
-def initialize_db():
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS owners (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        address TEXT,
-        phone_number TEXT
-    )
-    """)
+def log_warning(message):
+    """Log a warning message."""
+    logging.warning(message)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS pets (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        species TEXT,
-        breed TEXT,
-        age INTEGER,
-        owner_id INTEGER,
-        FOREIGN KEY (owner_id) REFERENCES owners (id)
-    )
-    """)
+def log_error(message):
+    """Log an error message."""
+    logging.error(message)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS veterinarians (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        specialty TEXT
-    )
-    """)
+def log_critical(message):
+    """Log a critical message."""
+    logging.critical(message)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS appointments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        date TEXT NOT NULL,
-        reason TEXT,
-        pet_id INTEGER,
-        veterinarian_id INTEGER,
-        FOREIGN KEY (pet_id) REFERENCES pets (id),
-        FOREIGN KEY (veterinarian_id) REFERENCES veterinarians (id)
-    )
-    """)
+# Example usage of logging
+if __name__ == "__main__":
+    log_debug("This is a debug message.")
+    log_info("This is an info message.")
+    log_warning("This is a warning message.")
+    log_error("This is an error message.")
+    log_critical("This is a critical message.")
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS treatments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT,
-        cost REAL
-    )
-    """)
-
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS medical_records (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        record_date TEXT NOT NULL,
-        details TEXT,
-        pet_id INTEGER,
-        FOREIGN KEY (pet_id) REFERENCES pets (id)
-    )
-    """)
-
-    conn.commit()
-
-# Call the function to initialize the database tables
-initialize_db()
