@@ -5,8 +5,11 @@ The Veterinary Clinic Management System is a command-line application built in P
 
 Features
 Database Management: Uses SQLite for storing data with tables for pets, owners, veterinarians, appointments, treatments, and medical records.
+
 CRUD Operations: Supports Create, Read, Update, and Delete operations for all main entities through an intuitive command-line interface.
+
 Seed Data: Provides initial data setup through seed scripts to populate the database with sample pets, owners, veterinarians, appointments, treatments, and medical records.
+
 Project Structure
 The project follows a structured approach with different modules and scripts organized into directories:
 
@@ -37,6 +40,7 @@ Veterinary-clinic-management-system/
 ├── Pipfile                # Dependencies management using Pipenv
 ├── Pipfile.lock           # Locked dependencies file
 └── README.md              # Project overview and instructions
+
 Installation and Setup
 Prerequisites
 Python: Ensure Python 3.6 or higher is installed.

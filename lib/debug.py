@@ -2,11 +2,13 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+
 from models.pet import Pet
 from models.appointment import Appointment
 from models.owner import Owner
 from models.veterinarian import Veterinarian
 from models.treatment import Treatment
+from models.medical_record import MedicalRecord  
 from datetime import datetime
 
 import ipdb
@@ -18,6 +20,7 @@ def reset_database():
     owner = Owner()
     veterinarian = Veterinarian()
     treatment = Treatment()
+    medical_record = MedicalRecord()  
     
     # Drop existing tables
     pet.drop_table()
@@ -25,6 +28,7 @@ def reset_database():
     owner.drop_table()
     veterinarian.drop_table()
     treatment.drop_table()
+    medical_record.drop_table()  
 
     # Create new tables
     pet.create_table()
@@ -32,6 +36,7 @@ def reset_database():
     owner.create_table()
     veterinarian.create_table()
     treatment.create_table()
+    medical_record.create_table()  
 
     # Create seed data for pets
     pet.create("Bella", "Dog", "Labrador", 3, 1)
@@ -39,16 +44,11 @@ def reset_database():
     pet.create("Charlie", "Dog", "Husky", 3, 3)
     pet.create("Sly", "Cat", "Egyptian Cat", 4, 4)
     
-
     # Create seed data for appointments
     appointment.create(1, datetime.now(), 'scheduled', 'Routine checkup')
     appointment.create(2, datetime.now(), 'completed', 'Vaccination')
     appointment.create(3, datetime.now(), 'scheduled', 'To be performed')
     appointment.create(4, datetime.now(), 'scheduled', 'Testing')
-    
-
-
-    
 
     # Create seed data for owners
     owner.create("John Doe", "john@gmail.com", "789675434")
@@ -56,23 +56,24 @@ def reset_database():
     owner.create("Orlando Sky", "orlando@gmail.com", "719132133")
     owner.create("Lucy Smiles", "lucy@gmail.com", "723633827")
     
-
     # Create seed data for veterinarians
     veterinarian.create("Dr. Felicity Muhonja Ilavatsa", "Dermatologist", "123456789")
     veterinarian.create("Dr. John Waweru", "Dentist", "987654321")
     veterinarian.create("Dr. Marcelous Griffins", "Surgeon", "987679201")
     veterinarian.create("Dr. Nora Roberts", "Opthamologist", "746028753")
     
-
     # Create seed data for treatments
     treatment.create(1, 1, datetime.now(), "Skin")
     treatment.create(2, 2, datetime.now(), "Dental cleaning")
     treatment.create(3, 3, datetime.now(), "Vaccination")
     treatment.create(4, 4, datetime.now(), "Eyes")
+    
+    # Create seed data for medical records
+    medical_record.create(1, 'Routine check-up: All vitals normal.', datetime.now())
+    medical_record.create(2, 'Vaccination: Rabies shot administered.', datetime.now())
+    medical_record.create(3, 'Check-up: Minor skin infection treated.', datetime.now())
+    medical_record.create(4, 'Emergency visit: Minor surgery performed.', datetime.now())
 
 # Reset the database and start debugging session
 reset_database()
 ipdb.set_trace()
-
-
-

@@ -25,7 +25,7 @@ class Appointment:
     def create(self, pet_id, appointment_date, status, description):
         query = '''
         INSERT INTO appointment (pet_id, appointment_date, status, description) 
-        VALUES (?, ?, ?, ?, ?);
+        VALUES (?, ?, ?, ?);
         '''
         execute_query(query, (pet_id, appointment_date, status, description))
 
