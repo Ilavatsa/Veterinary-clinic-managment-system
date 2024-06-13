@@ -3,7 +3,7 @@ import sqlite3
 
 def connect():
     """Connect to the SQLite database."""
-    return sqlite3.connect('vet_clinic.db')
+    return sqlite3.connect('veterinary_clinic.db')
 
 def execute_query(query):
     """Execute a query on the database."""

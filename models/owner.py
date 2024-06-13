@@ -1,28 +1,37 @@
-from db_helper import execute_query, fetch
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from database.db_helper import execute_query, fetch
 
 class Owner:
     def create_table(self):
-        """Create the owner table."""
-        query = """
+        query = '''
         CREATE TABLE IF NOT EXISTS owner (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT,
-            phone_number TEXT
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            phone TEXT NOT NULL
         );
-        """
-        execute_query(query)
-
-    def create(self, name, email, phone_number):
-        """Create a new owner."""
-        query = f"""
-        INSERT INTO owner (name, email, phone_number)
-        VALUES ('{name}', '{email}', '{phone_number}');
-        """
+        '''
         execute_query(query)
 
     def drop_table(self):
-        """Drop the owner table."""
         query = "DROP TABLE IF EXISTS owner;"
         execute_query(query)
+
+    def create(self, name, email, phone):
+        query = '''
+        INSERT INTO owner (name, email, phone) 
+        VALUES (?, ?, ?);
+        '''
+        execute_query(query, (name, email, phone))
+
+    def all(self):
+        query = "SELECT * FROM owner;"
+        return fetch(query)
+
+    def find_by_id(self, owner_id):
+        query = "SELECT * FROM owner WHERE id = ?;"
+        return fetch(query, (owner_id,))
 

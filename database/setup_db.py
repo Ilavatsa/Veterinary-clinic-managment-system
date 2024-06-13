@@ -1,11 +1,16 @@
-from db_helper import execute_query
+import sqlite3
 
 def setup_database():
-    """Setup the database by creating tables."""
-    with open('create_tables.sql', 'r') as f:
-        sql_script = f.read()
-        execute_query(sql_script)
+    with open('database/create_tables.sql', 'r') as f:
+        sql = f.read()
+    
+    conn = sqlite3.connect('veterinary_clinic.db')
+    cursor = conn.cursor()
+    cursor.executescript(sql)
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
     setup_database()
+
 

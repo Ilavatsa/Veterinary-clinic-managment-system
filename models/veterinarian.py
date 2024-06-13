@@ -1,27 +1,36 @@
-from db_helper import execute_query, fetch
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from database.db_helper import execute_query, fetch
 
 class Veterinarian:
     def create_table(self):
-        """Create the veterinarian table."""
-        query = """
+        query = '''
         CREATE TABLE IF NOT EXISTS veterinarian (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            specialization TEXT,
-            phone_number TEXT
+            name TEXT NOT NULL,
+            specialty TEXT NOT NULL,
+            phone TEXT NOT NULL
         );
-        """
-        execute_query(query)
-
-    def create(self, name, specialization, phone_number):
-        """Create a new veterinarian."""
-        query = f"""
-        INSERT INTO veterinarian (name, specialization, phone_number)
-        VALUES ('{name}', '{specialization}', '{phone_number}');
-        """
+        '''
         execute_query(query)
 
     def drop_table(self):
-        """Drop the veterinarian table."""
         query = "DROP TABLE IF EXISTS veterinarian;"
         execute_query(query)
+
+    def create(self, name, specialty, phone):
+        query = '''
+        INSERT INTO veterinarian (name, specialty, phone) 
+        VALUES (?, ?, ?);
+        '''
+        execute_query(query, (name, specialty, phone))
+
+    def all(self):
+        query = "SELECT * FROM veterinarian;"
+        return fetch(query)
+
+    def find_by_id(self, veterinarian_id):
+        query = "SELECT * FROM veterinarian WHERE id = ?;"
+        return fetch(query, (veterinarian_id,))
