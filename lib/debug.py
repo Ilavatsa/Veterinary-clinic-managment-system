@@ -34,9 +34,9 @@ def reset_database():
     treatment.create_table()
 
     # Create seed data for pets
-    pet.create("Bella", "Dog", "Labrador", 1, 1)
+    pet.create("Bella", "Dog", "Labrador", 3, 1)
     pet.create("Max", "Cat", "Siamese", 2, 2)
-    pet.create("Bolt", "Dog", "Husky", 3, 3)
+    pet.create("Charlie", "Dog", "Husky", 3, 3)
     pet.create("Sly", "Cat", "Egyptian Cat", 4, 4)
     
 
